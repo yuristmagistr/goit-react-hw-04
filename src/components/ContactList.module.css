@@ -1,0 +1,7 @@
+.contactBox {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    padding: 20px;
+    gap: 10px;
+}

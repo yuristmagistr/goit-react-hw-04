@@ -1,0 +1,41 @@
+.contactGroup {
+    width: 350px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 5px;
+    display: flex;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.contactData {
+    list-style-type: none;
+}
+
+.list {
+    padding: 0;
+    align-items: first baseline;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+}
+
+
+.buttonDelete {
+    background-color: rgb(224, 223, 223);
+    width: 100px;
+    height: 40px;
+    margin-left: auto;
+    margin-top: 10px;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 5px;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.50s;
+}
+
+button:hover {
+    background-color: rgb(116, 115, 115);}
