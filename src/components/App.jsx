@@ -1,55 +1,110 @@
-import { useState, useEffect } from 'react';
-import ContactList from './ContactList.jsx';
-import ContactForm from './ContactForm.jsx';
-import SearchBox from './SearchBox.jsx';
-import './App.css';
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import './App.css'
 
-const App = () => {
-  const initialContacts = [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' }
-  ];
+import SearchBar from './SearchBar.jsx'
+import ImageGallery from './ImageGallery.jsx'
+import Loader from './Loader.jsx'
+import ErrorMessage from './ErrorMessage.jsx'
+import LoadMoreBtn from './LoadMoreBtn.jsx'
+import ImageModal from './ImageModal.jsx'
 
-  const [contacts, setContacts] = useState(initialContacts);
-  const [filter, setFilter] = useState('');
+function App() {
+    const [images, setImages] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [page, setPage] = useState(1);
+    const [hasMoreImages, setHasMoreImages] = useState(true);
+    const [query, setQuery] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const Access_Key = 'tduHHbAa4npMMmy9-9F3ymHBTWtNJqSC9pq8S2nRSMo';
 
-  useEffect(() => {
-    const storedContacts = JSON.parse(localStorage.getItem('contacts'));
-    if (storedContacts) {
-      setContacts(storedContacts);
+    async function fetchImages(query, pageNum) {
+        try {
+            setLoading(true);
+            
+            const params = {
+                client_id: Access_Key,
+                query: query,
+                orientation: 'landscape',
+                page: pageNum,
+                per_page: 16,
+            };
+            const response = await axios.get(`https://api.unsplash.com/search/photos/`, {
+                params: params,
+                headers: {
+                    Authorization: `Client-ID ${Access_Key}`
+                }
+            });
+            const normalizeData = response.data.results.map(({ alt_description, id, urls }) => ({
+                alt: alt_description,
+                id,
+                small: urls.small,
+                regular: urls.regular,
+            }));
+
+            if (pageNum === 1) {
+                setImages(normalizeData);
+            } else {
+                setImages(prevImages => [...prevImages, ...normalizeData]);
+            }
+
+            setError('');
+
+            if (response.data.results.length === 0) {
+                setHasMoreImages(false);
+            }
+        } catch (error) {
+            setError('Error fetching images. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
     }
-  }, []);
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+    useEffect(() => {
+    if (!query ) return; 
+            fetchImages(query, page);
+    }, [query, page]);
 
-  const addContact = (newContact) => {
-    setContacts([...contacts, newContact]);
-  };
+    
 
-  const deleteContact = (id) => {
-    setContacts(contacts.filter(contact => contact.id !== id));
-  };
+    const handleSearch = (query) => {
+        setQuery(query);
+        setPage(1);
+        setImages([]);
+    };
 
-  // const handleFilterChange = (event) => {
-  //   setFilter(event.target.value);
-  // };
+    const loadMore = () => {
+        setPage(page + 1);
+    };
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+    const handleImageClick = (image) => {
+        setSelectedImage(image);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedImage(null);
+        setIsModalOpen(false);
+    };
 
   return (
-    <div className="Box">
-      <h1>Phonebook</h1>
-      <ContactForm addContact={addContact} />
-      <SearchBox value={filter} onChange={setFilter} />
-      <ContactList contacts={filteredContacts} deleteContact={deleteContact} />
-    </div>
-  );
-};
+    <>
+            <SearchBar onSubmit={handleSearch} />
+            {loading && <Loader />}
+            {error && <ErrorMessage message={error} />}
+            {images.length > 0 && <ImageGallery images={images} onClick={handleImageClick} />}
+            {hasMoreImages && images.length > 0 && <LoadMoreBtn onClick={loadMore} />}
+            {selectedImage && (
+                <ImageModal
+                    images={selectedImage}
+                    isOpen={isModalOpen}
+                    onRequestClose={closeModal}
+                />
+            )}
+    </>
+  )
+}
 
-export default App;
+export default App
