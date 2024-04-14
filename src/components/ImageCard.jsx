@@ -4,7 +4,7 @@ import css from './ImageCard.module.css';
    return (
      <li className={css.card}>
        <div className={css.container}>
-         <img src={imageUrl} alt={alt} onClick={onClick} width="320" height="200"/>
+         <img src={imageUrl} alt={alt} onClick={onClick} width="350" height="220"/>
        </div>
      </li>
    );

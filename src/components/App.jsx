@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './App.css'
 
+// eslint-disable-next-line no-unused-vars
+import toast, { Toaster } from "react-hot-toast";
+
 import SearchBar from './SearchBar.jsx'
 import ImageGallery from './ImageGallery.jsx'
 import Loader from './Loader.jsx'
@@ -29,7 +32,7 @@ function App() {
                 query: query,
                 orientation: 'landscape',
                 page: pageNum,
-                per_page: 16,
+                per_page: 9,
             };
             const response = await axios.get(`https://api.unsplash.com/search/photos/`, {
                 params: params,
@@ -50,10 +53,11 @@ function App() {
                 setImages(prevImages => [...prevImages, ...normalizeData]);
             }
 
-            setError('');
+            // setError('');
 
             if (response.data.results.length === 0) {
                 setHasMoreImages(false);
+                toast.error("Sorry, we have not found the photos for your request. Try to write it differently.");
             }
         } catch (error) {
             setError('Error fetching images. Please try again later.');
@@ -91,7 +95,7 @@ function App() {
 
   return (
     <>
-            <SearchBar onSubmit={handleSearch} />
+          <SearchBar onSubmit={handleSearch} />
             {loading && <Loader />}
             {error && <ErrorMessage message={error} />}
             {images.length > 0 && <ImageGallery images={images} onClick={handleImageClick} />}

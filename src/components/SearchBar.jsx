@@ -44,7 +44,7 @@
 
 
 import { Field, Form, Formik } from "formik";
-// import toast, { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import css from "./SearchBar.module.css";
 
 const SearchBar = ({ onSubmit }) => {
@@ -59,23 +59,24 @@ const SearchBar = ({ onSubmit }) => {
     }
   };
   return (
-    <header className={css["header"]}>
+    <header className={css.header}>
       <Formik
         initialValues={{ query: "" }}
         onSubmit={handleSubmit} // використання функції handleSubmit
       >
-        <Form className={css["Form"]}>
+        <Form className={css.Form}>
           <Field
-            className={css["Field"]}
+            className={css.Field}
             placeholder="Search images and photos"
             type="text"
             name="query"
           />
-          <button className={css["searchBtn"]} type="submit">
+          <button className={css.searchBtn} type="submit">
             Search
           </button>
         </Form>
       </Formik>
+      <Toaster position="top-right" />
     </header>
   );
 };
