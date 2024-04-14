@@ -32,7 +32,7 @@ function App() {
                 query: query,
                 orientation: 'landscape',
                 page: pageNum,
-                per_page: 9,
+                per_page: 12,
             };
             const response = await axios.get(`https://api.unsplash.com/search/photos/`, {
                 params: params,

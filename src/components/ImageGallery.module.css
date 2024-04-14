@@ -5,4 +5,20 @@
     justify-content: center;
     align-items: flex-start;
     gap: 24px;
+
+    display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        /* Розподіл на 4 стовпці */
+        gap: 20px;
+        /* Проміжок між зображеннями */
+}
+
+.imageItem {
+    cursor: pointer;
+}
+
+.imageItem img {
+    width: 100%;
+    /* height: auto; */
+    display: block;
 }
